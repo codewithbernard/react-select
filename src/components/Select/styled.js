@@ -33,13 +33,17 @@ const SelectDropdown = styled.ul`
   width: 100%;
   top: 75px;
   overflow: hidden;
+  opacity: ${props => (props.open ? 1 : 0)};
+  transform: scaleY(${props => (props.open ? 1 : 0)});
+  will-change: transform, opacity;
+  transition: opacity 0.3s, transform 0.3s;
 `;
 
 const SelectDropdownOption = styled.li`
   font-weight: 600;
   font-size: 16px;
   color: #4f4f4f;
-  padding: 5px 17px;
+  padding: 10px 17px;
   cursor: pointer;
   background-color: #ffffff;
   will-change: background-color;

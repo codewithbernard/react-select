@@ -16,6 +16,39 @@ class Select extends Component {
 
     this.openDropdown = this.openDropdown.bind(this);
     this.closeDropdown = this.closeDropdown.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.containerRef = React.createRef();
+  }
+
+  /**
+   * Add click event to register click outside of drodpown
+   */
+  componentDidMount() {
+    document.addEventListener("mousedown", this.handleClickOutside);
+  }
+
+  /**
+   * Remove click event to register click outside of drodpown
+   */
+  componentWillUnmount() {
+    document.removeEventListener("mousedown", this.handleClickOutside);
+  }
+
+  /**
+   * Check if click was outside dropdown element
+   * @param {HtmlEvent} event
+   */
+  handleClickOutside(event) {
+    const { open } = this.state;
+    if (
+      this.containerRef &&
+      this.containerRef.current &&
+      !this.containerRef.current.contains(event.target)
+    ) {
+      if (open) {
+        this.setState({ open: false });
+      }
+    }
   }
 
   openDropdown() {
@@ -30,7 +63,7 @@ class Select extends Component {
     const { open } = this.state;
 
     return (
-      <SelectContainer>
+      <SelectContainer ref={this.containerRef}>
         <SelectButton onClick={this.openDropdown}>Hola Hola</SelectButton>
         <SelectDropdown open={open}>
           <SelectDropdownOption>1</SelectDropdownOption>
