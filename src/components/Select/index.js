@@ -11,12 +11,13 @@ class Select extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      selected: {}
     };
 
     this.openDropdown = this.openDropdown.bind(this);
     this.closeDropdown = this.closeDropdown.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.setSelected = this.setSelected.bind(this);
     this.containerRef = React.createRef();
   }
 
@@ -51,24 +52,49 @@ class Select extends Component {
     }
   }
 
+  /**
+   *
+   * @param {Object} selected - Selected item
+   */
+  setSelected(selected) {
+    const { handleChange } = this.props;
+
+    this.setState({ selected, open: false });
+    handleChange(selected);
+  }
+
+  /**
+   * Opens dropdown
+   */
   openDropdown() {
     this.setState({ open: true });
   }
 
+  /**
+   * Closes dropdown
+   */
   closeDropdown() {
     this.setState({ open: false });
   }
 
   render() {
-    const { open } = this.state;
+    const { open, selected, placeHolder } = this.state;
+    const { options } = this.props;
 
     return (
       <SelectContainer ref={this.containerRef}>
-        <SelectButton onClick={this.openDropdown}>Hola Hola</SelectButton>
+        <SelectButton onClick={this.openDropdown}>
+          {selected.label || placeHolder}
+        </SelectButton>
         <SelectDropdown open={open}>
-          <SelectDropdownOption>1</SelectDropdownOption>
-          <SelectDropdownOption>2</SelectDropdownOption>
-          <SelectDropdownOption>3</SelectDropdownOption>
+          {options.map(item => (
+            <SelectDropdownOption
+              key={item.id}
+              onClick={() => this.setSelected(item)}
+            >
+              {item.label}
+            </SelectDropdownOption>
+          ))}
         </SelectDropdown>
       </SelectContainer>
     );
@@ -77,11 +103,13 @@ class Select extends Component {
 
 Select.propTypes = {
   options: PropTypes.arrayOf(PropTypes.object).isRequired,
-  placeHolder: PropTypes.string
+  placeHolder: PropTypes.string,
+  handleChange: PropTypes.func
 };
 
 Select.defaultProps = {
-  placeHolder: ""
+  placeHolder: "",
+  handleChange: () => null
 };
 
 export default Select;
